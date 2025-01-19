@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
-  "type": "module",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
@@ -14,8 +13,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.1",
+    "@types/node": "^22.10.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@lifi/data-types": "^5.20.0",
+    "@lifi/sdk": "^3.5.2",
+    "dotenv": "^16.4.7",
+    "viem": "^2.22.9"
   }
-} 
+}
