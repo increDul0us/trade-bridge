@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BridgeStatus {
+  PENDING
+  COMPLETED 
+  FAILED
+}
+
+model BridgeRecord {
+  id          String       @id @default(uuid())
+  fromAddress String
+  toAddress   String
+  fromChainId Int
+  toChainId   Int
+  fromAmount  String
+  fromToken   String
+  toToken     String
+  status      BridgeStatus @default(PENDING)
+  route       Json
+  steps       Json[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}

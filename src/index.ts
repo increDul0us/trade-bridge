@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { polygon, base } from 'viem/chains';
-import { BridgeService } from './services/bridge/bridge.service';
+import { BridgeExecutionService } from './services/bridgeExecution.service';
+import { BridgeRecordService } from './services/bridgeRecord.service';
 import { initializeLiFiConfig } from './config/lifi.config';
 import { ChainId, CoinKey } from '@lifi/sdk';
 import { findDefaultToken } from '@lifi/data-types'
@@ -15,13 +16,13 @@ async function main() {
             supportedChains
         );
 
-        const bridgeService = new BridgeService();
+        const recordService = new BridgeRecordService();
+        const executionService = new BridgeExecutionService(recordService);
 
         const fromTokenAddress = findDefaultToken(CoinKey.USDC, ChainId.POL).address;
         const toTokenAddress = findDefaultToken(CoinKey.USDC, ChainId.BAS).address;
 
-        // Start bridging
-        await bridgeService.startBridging({
+        const executionId = await executionService.startBridging({
             fromChainId: ChainId.POL,
             toChainId: ChainId.BAS,
             fromAmount: '100000',
@@ -32,6 +33,10 @@ async function main() {
             slippage: 0.03,
         });
 
+        console.log(`Bridge process started with execution ID: ${executionId}`);
+
+        const status = await recordService.getStatus(executionId);
+        console.log('Current status:', status);
 
     } catch (error) {
         console.error('Error:', error);
