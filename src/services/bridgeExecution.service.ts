@@ -36,6 +36,10 @@ export class BridgeExecutionService {
     console.log('Fetching available routes...');
     const routeResponse = await getRoutes(routeRequest);
     console.log(`Found ${routeResponse.routes.length} available routes`);
+
+    if (routeResponse.routes.length === 0) {
+      throw new Error('No available routes found');
+    }
     
     const route = routeResponse.routes[0];
     console.log('Selected route:', {
