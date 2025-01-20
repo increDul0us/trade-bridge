@@ -1,37 +1,23 @@
 import { EVM, createConfig } from '@lifi/sdk';
-import { Chain, WalletClient, createWalletClient, http } from 'viem';
-import { Account, privateKeyToAccount } from 'viem/accounts';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { mainnet } from 'viem/chains';
 
-export const initializeLiFiConfig = (
-  privateKey: string,
-  supportedChains: Chain[]
-) => {
-  const account = privateKeyToAccount(privateKey as `0x${string}`);
-  const defaultClient = createWalletClient({
-    account,
-    chain: supportedChains[0],
-    transport: http(),
-  });
+export const initializeLiFiConfig = () => {
+  const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
 
   createConfig({
     integrator: 'trade-bridge',
     providers: [
       EVM({
-        getWalletClient: () => Promise.resolve(defaultClient),
-        switchChain: (chainId) =>
-          Promise.resolve(
-            createWalletClient({
-              account,
-              chain: supportedChains.find((chain) => chain.id === chainId),
-              transport: http(),
-            })
-          ),
+        getWalletClient: () => Promise.resolve(createWalletClient({
+          account,
+          chain: mainnet,
+          transport: http(),
+        })),
       }),
     ],
   });
 
-  return {
-    account,
-    client: defaultClient,
-  };
+  return { account };
 }; 

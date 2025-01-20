@@ -1,17 +1,12 @@
 import express from 'express';
-import { polygon, base } from 'viem/chains';
 import { BridgeExecutionService } from './services/bridgeExecution.service';
 import { BridgeRecordService } from './services/bridgeRecord.service';
 import { initializeLiFiConfig } from './config/lifi.config';
 
-const supportedChains = [polygon, base];
-const { account } = initializeLiFiConfig(
-  process.env.PRIVATE_KEY!,
-  supportedChains
-);
+const { account } = initializeLiFiConfig();
 
 const recordService = new BridgeRecordService();
-const executionService = new BridgeExecutionService(recordService);
+const executionService = new BridgeExecutionService(recordService, account);
 
 const app = express();
 app.use(express.json());
